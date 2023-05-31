@@ -1,176 +1,144 @@
 import { memo, useState } from 'react';
 import ColorSelect from './ColorSelect';
-import { Select, MenuItem, Button, Tabs, Tab, Box } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    changeGap,
+    changeLineWidth,
+    changeSize,
+    selectBgVariant,
+    bgVariants,
+    setColor,
+} from '../slices/bgSlice';
+import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
+import DownloadButton from './DownloadButton';
 
-const bgVariants = [
-    {
-        text: 'Точки',
-        value: 'dots',
-        size: 1,
-        gap: 25,
-    },
-    {
-        text: 'Лінії',
-        value: 'lines',
-        gap: 25,
-        lineWidth: 1,
-    },
-    {
-        text: 'Хрестики',
-        value: 'cross',
-        size: 6,
-        gap: 25,
-    },
-];
+const visibleSettings = {
+    dots: [
+        { title: 'Розмір', prop: 'size', handler: changeSize, step: 1 },
+        { title: 'Проміжок', prop: 'gap', handler: changeGap, step: 1 },
+    ],
+    lines: [
+        {
+            title: 'Ширина ліній',
+            prop: 'lineWidth',
+            handler: changeLineWidth,
+            step: 1,
+        },
+        { title: 'Проміжок', prop: 'gap', handler: changeGap, step: 1 },
+    ],
+    cross: [
+        { title: 'Розмір', prop: 'size', handler: changeSize, step: 1 },
+        { title: 'Проміжок', prop: 'gap', handler: changeGap, step: 1 },
+    ],
+};
 
-export const initialBgOpts = bgVariants[0];
+const BgControl = () => {
+    const dispatch = useDispatch();
 
-const BgControl = memo(({ opts, setOpts }) => {
-    const selectBgVariantHandle = (e) => {
-        bgVariants.forEach((i) => {
-            if (i.value === e.target.value) {
-                setOpts(i);
-            }
-        });
-    };
+    const opts = useSelector((state) => state.bg);
 
-    const changeGapHandle = (op) => {
-        setOpts((s) => {
-            return {
-                ...s,
-                gap: s.gap + op,
-            };
-        });
-    };
-
-    const changeSizeHandle = (op) => {
-        setOpts((s) => {
-            return {
-                ...s,
-                size: s.size + op,
-            };
-        });
-    };
-
-    const changeLineWidthHandle = (op) => {
-        setOpts((s) => {
-            return {
-                ...s,
-                lineWidth: s.lineWidth + op,
-            };
-        });
-    };
-
-    const changeColorHandle = (e) => {
-        setOpts((s) => {
-            return {
-                ...s,
-                color: e.target.value,
-            };
-        });
-    };
-
-    // const SelItems = () => {
-    //     return (
-    //         <Select onChange={selectBgVariantHandle} value={'dots'}>
-    //             {bgVariants.map((v) => (
-    //                 <MenuItem key={v.value} value={v.value}>
-    //                     {v.text}
-    //                 </MenuItem>
-    //             ))}
-    //         </Select>
-    //     );
-    // };
-
-    console.log('bg control render');
-
-    const [value, setValue] = useState(0);
-
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
+    console.log('<BgControl /> render');
 
     return (
         <div>
-            <Box
-                sx={{
-                    maxWidth: { xs: 320, sm: 480 },
-                    bgcolor: 'background.paper',
-                }}
-            >
-                <Tabs
-                    value={value}
-                    onChange={handleChange}
-                    variant='scrollable'
-                    scrollButtons='auto'
-                    aria-label='scrollable auto tabs example'
-                >
-                    <Tab label='Item One' />
-                    <Tab label='Item Two' />
-                    <Tab label='Item Three' />
-                    <Tab label='Item Four' />
-                    <Tab label='Item Five' />
-                    <Tab label='Item Six' />
-                    <Tab label='Item Seven' />
-                </Tabs>
-            </Box>
-            <label htmlFor='bgVar'>Тип фону:</label>
-            <div>
-                <Select onChange={selectBgVariantHandle} value={opts.value}>
-                    {bgVariants.map((v) => (
-                        <MenuItem key={v.value} value={v.value}>
-                            {v.text}
-                        </MenuItem>
-                    ))}
-                </Select>
-                <Button variant='outlined' onClick={() => changeGapHandle(-2)}>
-                    -2
-                </Button>
-                <label>Gap {opts.gap}</label>
-                <Button variant='outlined' onClick={() => changeGapHandle(2)}>
-                    +2
-                </Button>
-            </div>
-
-            {opts.value !== 'lines' ? (
-                <div>
-                    <Button
-                        variant='outlined'
-                        onClick={() => changeSizeHandle(-2)}
-                    >
-                        -2
-                    </Button>
-                    <label>Size {opts.size}</label>
-                    <Button
-                        variant='outlined'
-                        onClick={() => changeSizeHandle(2)}
-                    >
-                        +2
-                    </Button>
-                </div>
-            ) : (
-                <div>
-                    <Button
-                        variant='outlined'
-                        onClick={() => changeLineWidthHandle(-2)}
-                    >
-                        -2
-                    </Button>
-                    <label>Line Width {opts.lineWidth}</label>
-                    <Button
-                        variant='outlined'
-                        onClick={() => changeLineWidthHandle(2)}
-                    >
-                        +2
-                    </Button>
-                </div>
-            )}
-            <ColorSelect
-                value={opts.value}
-                changeColorHandle={changeColorHandle}
-            />
+            <Tabs>
+                <TabList>
+                    <Tab>Фон полотна</Tab>
+                    <Tab>I/O</Tab>
+                </TabList>
+                <TabPanel>
+                    <div className='container'>
+                        <div>
+                            <div className='input-group flex-nowrap mb-3'>
+                                <span
+                                    className='input-group-text'
+                                    id='addon-wrapping'
+                                >
+                                    Тип:
+                                </span>
+                                <select
+                                    className='form-select'
+                                    onChange={(e) =>
+                                        dispatch(
+                                            selectBgVariant(e.target.value)
+                                        )
+                                    }
+                                    value={opts.variant}
+                                >
+                                    {bgVariants.map((v) => (
+                                        <option
+                                            key={v.variant}
+                                            value={v.variant}
+                                        >
+                                            {v.text}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+                        {visibleSettings[opts.variant].map((s) => (
+                            <div key={s.prop}>
+                                <div>{s.title}</div>
+                                <div className='input-group mb-3'>
+                                    <button
+                                        className='btn btn-outline-secondary'
+                                        type='button'
+                                        onClick={() =>
+                                            dispatch(s.handler(-s.step))
+                                        }
+                                    >
+                                        -{s.step}
+                                    </button>
+                                    <span className='input-group-text'>
+                                        {opts[s.prop]}
+                                    </span>
+                                    <button
+                                        className='btn btn-outline-secondary'
+                                        type='button'
+                                        onClick={() =>
+                                            dispatch(s.handler(s.step))
+                                        }
+                                    >
+                                        +{s.step}
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                        <div className='justify-content'>
+                            <label htmlFor='bg-color'>
+                                Колір фону полотна:
+                            </label>
+                            <input
+                                id='bg-color'
+                                type='color'
+                                value={opts.color}
+                                onChange={(e) =>
+                                    dispatch(setColor(e.target.value))
+                                }
+                            />
+                        </div>
+                    </div>
+                </TabPanel>
+                <TabPanel>
+                    <div className='container'>
+                        <DownloadButton className='mb-3' />
+                        <button className='btn btn-outline-success mb-3'>
+                            <div className='justify-content'>
+                                <i class='bi bi-file-earmark-arrow-down-fill'></i>
+                                <span>Зберегти JSON</span>
+                            </div>
+                        </button>
+                        <button className='btn btn-outline-success mb-3'>
+                            <div className='justify-content'>
+                                <i class='bi bi-file-earmark-arrow-up-fill'></i>{' '}
+                                <span>Завантажити JSON</span>
+                            </div>
+                        </button>
+                    </div>
+                </TabPanel>
+            </Tabs>
         </div>
     );
-});
+};
 
 export default BgControl;

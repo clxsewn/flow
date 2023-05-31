@@ -1,4 +1,5 @@
-import { Checkbox, FormControlLabel, MenuItem, Select } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLabel, setType, toggleAnimation } from '../slices/edgesSlice';
 
 const edgeTypes = [
     {
@@ -19,39 +20,48 @@ const edgeTypes = [
     },
 ];
 
-const EdgeControl = ({ id, data, setEdges }) => {
+const EdgeControl = () => {
+    const dispatch = useDispatch();
+    const edges = useSelector((state) => state.edges);
+    const selectedIndex = edges.findIndex((e) => e.selected);
+
     const setTypeHandle = (event) => {
-        setEdges((e) => {
-            const t = [...e];
-            t[id].type = event.target.value;
-            return t;
-        });
+        dispatch(setType({ id: selectedIndex, type: event.target.value }));
     };
 
-    const setAnimated = (event) => {
-        setEdges((e) => {
-            const t = [...e];
-            t[id].animated = event.target.checked;
-            return t;
-        });
+    const setAnimated = () => {
+        dispatch(toggleAnimation(selectedIndex));
     };
 
-    if (!data.type) data.type = 'default';
+    const setLabelHandle = (event) => {
+        dispatch(
+            setLabel({
+                id: selectedIndex,
+                label: event.target.value,
+            })
+        );
+    };
 
     return (
         <div>
-            <Select value={data.type} onChange={setTypeHandle}>
+            <div>
+                <input
+                    type='text'
+                    value={edges[selectedIndex].label}
+                    onChange={setLabelHandle}
+                />
+            </div>
+            <select value={edges[selectedIndex].type} onChange={setTypeHandle}>
                 {edgeTypes.map((t) => (
-                    <MenuItem key={t.type} value={t.type}>
+                    <option key={t.type} value={t.type}>
                         {t.text}
-                    </MenuItem>
+                    </option>
                 ))}
-            </Select>
-            <FormControlLabel
-                control={
-                    <Checkbox checked={data?.animated} onChange={setAnimated} />
-                }
-                label='Анімація'
+            </select>
+            <input
+                type='checkbox'
+                checked={edges[selectedIndex].animated}
+                onChange={setAnimated}
             />
         </div>
     );

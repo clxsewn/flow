@@ -1,6 +1,7 @@
 import { memo } from 'react';
+import { nodeListCategories } from '../nodeUtils';
 
-const NodesList = memo(() => {
+const NodesList = () => {
     const onDragStart = (event, nodeType) => {
         event.dataTransfer.setData('application/reactflow', nodeType);
         event.dataTransfer.effectAllowed = 'move';
@@ -8,70 +9,56 @@ const NodesList = memo(() => {
 
     console.log('Node List render!');
 
+    let categoryId = 0;
+
     return (
         <aside>
             <div className='description'>
-                You can drag these nodes to the pane on the right.
+                Ви можете перетягувати фігури на полотно.
             </div>
             <div
-                className='dndnode input'
-                onDragStart={(event) => onDragStart(event, 'textUpdater')}
-                draggable
+                className='accordion accordion-flush'
+                id='accordionPanelsStayOpenExample'
             >
-                Text Updater
-            </div>
-            <div
-                className='dndnode'
-                onDragStart={(event) => onDragStart(event, 'tableNode')}
-                draggable
-            >
-                Table Node
-            </div>
-            <div
-                onDragStart={(event) => onDragStart(event, 'rectNode')}
-                draggable
-            >
-                <svg
-                    style={{
-                        left: '1px',
-                        top: '1px',
-                        width: '32px',
-                        height: '30px',
-                        display: 'block',
-                        position: 'relative',
-                        overflow: 'hidden',
-                        pointerEvents: 'none',
-                    }}
-                >
-                    <g style={{ pointerEvents: 'none' }}>
-                        <g style={{ pointerEvents: 'none' }}></g>
-                        <g style={{ pointerEvents: 'none' }}>
-                            <g
-                                transform='translate(0.5,0.5)'
-                                style={{
-                                    visibility: 'visible',
-                                    pointerEvents: 'none',
-                                }}
+                {nodeListCategories.map((c) => (
+                    <div key={c.id} className='accordion-item'>
+                        <h2 className='accordion-header'>
+                            <button
+                                className='accordion-button'
+                                type='button'
+                                data-bs-toggle='collapse'
+                                data-bs-target={`#panelsStayOpen-collapse${categoryId}`}
+                                aria-expanded='true'
+                                aria-controls={`panelsStayOpen-collapse${categoryId}`}
                             >
-                                <rect
-                                    x='1.44'
-                                    y='7.68'
-                                    width='28.8'
-                                    height='14.4'
-                                    fill='rgb(241, 243, 244)'
-                                    stroke='rgb(0, 0, 0)'
-                                    strokeWidth='1.3'
-                                    style={{ pointerEvents: 'none' }}
-                                ></rect>
-                            </g>
-                        </g>
-                        <g style={{ pointerEvents: 'none' }}></g>
-                        <g style={{ pointerEvents: 'none' }}></g>
-                    </g>
-                </svg>
+                                {c.title}
+                            </button>
+                        </h2>
+                        <div
+                            id={`panelsStayOpen-collapse${categoryId++}`}
+                            className='accordion-collapse collapse show'
+                        >
+                            <div className='accordion-body node-list'>
+                                {c.nodes.map((n) => (
+                                    <div
+                                        key={n.id}
+                                        className='node-item'
+                                        onDragStart={(event) =>
+                                            onDragStart(event, n.name)
+                                        }
+                                        draggable
+                                        title={n.title}
+                                    >
+                                        {n.icon}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                ))}
             </div>
         </aside>
     );
-});
+};
 
-export default NodesList;
+export default memo(NodesList);
