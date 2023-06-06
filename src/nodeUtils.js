@@ -1,68 +1,64 @@
-import TextUpdaterNode from './components/nodes/TextUpdaterNode';
-import TableNode, { TableNodeControl } from './components/nodes/TableNode';
-import RectNode, {
-    RectNodeControl,
-    rectNodeIcon,
-} from './components/nodes/RectNode';
+import RectNode, { rectNodeIcon } from './components/nodes/RectNode';
 import RoundedRectangleNode, {
-    RoundedRectangleNodeControl,
     RoundedRectangleNodeIcon,
 } from './components/nodes/RoundedRectangleNode';
-import OvalNode, {
-    OvalNodeControl,
-    OvalNodeIcon,
-} from './components/nodes/OvalNode';
+import OvalNode, { OvalNodeIcon } from './components/nodes/OvalNode';
 
 import TriangleUpShapeNode, {
     TU_PH,
-    TriangleUpShapeNodeControl,
     TriangleUpShapeNodeIcon,
 } from './components/nodes/TriangleUpShapeNode';
 
 import TriangleDownShapeNode, {
     TD_PH,
-    TriangleDownShapeNodeControl,
     TriangleDownShapeNodeIcon,
 } from './components/nodes/TriangleDownShapeNode';
 
 import TriangleLeftShapeNode, {
     TL_PH,
-    TriangleLeftShapeNodeControl,
     TriangleLeftShapeNodeIcon,
 } from './components/nodes/TriangleLeftShapeNode';
 
 import TriangleRightShapeNode, {
     TR_PH,
-    TriangleRightShapeNodeControl,
     TriangleRightShapeNodeIcon,
 } from './components/nodes/TriangleRightShapeNode';
 
 import TriangleTopLeftShapeNode, {
     TTL_PH,
-    TriangleTopLeftShapeNodeControl,
     TriangleTopLeftShapeNodeIcon,
 } from './components/nodes/TriangleTopLeftShapeNode';
 import TriangleTopRightShapeNode, {
     TTR_PH,
-    TriangleTopRightShapeNodeControl,
     TriangleTopRightShapeNodeIcon,
 } from './components/nodes/TriangleTopRightShapeNode';
 import TriangleBottomLeftShapeNode, {
     TBL_PH,
-    TriangleBottomLeftShapeNodeControl,
     TriangleBottomLeftShapeNodeIcon,
 } from './components/nodes/TriangleBottomLeftShapeNode';
 import TriangleBottomRightShapeNode, {
     TBR_PH,
-    TriangleBottomRightShapeNodeControl,
     TriangleBottomRightShapeNodeIcon,
 } from './components/nodes/TriangleBottomRightShapeNode';
 import DefaultNodeController from './components/DefaultNodeController';
+import TextNode, { TextNodeIcon } from './components/nodes/TextNode';
+import DiamondNode, { DiamondNodeIcon } from './components/nodes/DiamondNode';
+import ParallelogramNode, {
+    PRL_PH,
+    ParallelogramNodeIcon,
+} from './components/nodes/ParallelogramNode';
+import PentagonNode, {
+    PentagonNodeIcon,
+} from './components/nodes/PentagonNode';
+import HexagonNode, { HexagonNodeIcon } from './components/nodes/HexagonNode';
+import OctagonNode, { OctagonNodeIcon } from './components/nodes/OctagonNode';
 
 const defaultData = {
-    label: { text: 'Node', color: '#d61a7e', position: 'center', fontSize: 18 },
+    label: { text: 'Node', color: '#000000', fontSize: 18 },
     fillColor: '#ffffff',
     handles: [],
+    width: 100,
+    height: 100,
 };
 
 const defaultPossibleHandles = [
@@ -70,25 +66,25 @@ const defaultPossibleHandles = [
         id: 'top_1',
         name: 'Top',
         position: 'top',
-        style: {},
+        style: { left: '50%', top: '0', transform: 'translate(-50%, -50%)' },
     },
     {
         id: 'bottom_1',
         name: 'Bottom',
         position: 'bottom',
-        style: {},
+        style: { left: '50%', top: '100%', transform: 'translate(-50%, -50%)' },
     },
     {
         id: 'left_1',
         name: 'Left',
         position: 'left',
-        style: {},
+        style: { left: '0', top: '50%', transform: 'translate(-50%, -50%)' },
     },
     {
         id: 'right_1',
         name: 'Right',
         position: 'right',
-        style: {},
+        style: { left: '100%', top: '50%', transform: 'translate(-50%, -50%)' },
     },
 ];
 
@@ -107,6 +103,45 @@ export const nodesExplore = {
     },
     ovalNode: {
         component: OvalNode,
+        defaultData: defaultData,
+        controller: DefaultNodeController,
+        possibleHandles: defaultPossibleHandles,
+    },
+    textNode: {
+        component: TextNode,
+        defaultData: {
+            ...defaultData,
+            label: { ...defaultData.label, text: 'Текст' },
+        },
+        controller: DefaultNodeController,
+        possibleHandles: defaultPossibleHandles,
+    },
+    diamondNode: {
+        component: DiamondNode,
+        defaultData: defaultData,
+        controller: DefaultNodeController,
+        possibleHandles: defaultPossibleHandles,
+    },
+    parallelogramNode: {
+        component: ParallelogramNode,
+        defaultData: defaultData,
+        controller: DefaultNodeController,
+        possibleHandles: PRL_PH,
+    },
+    pentagonNode: {
+        component: PentagonNode,
+        defaultData: defaultData,
+        controller: DefaultNodeController,
+        possibleHandles: defaultPossibleHandles,
+    },
+    hexagonNode: {
+        component: HexagonNode,
+        defaultData: defaultData,
+        controller: DefaultNodeController,
+        possibleHandles: defaultPossibleHandles,
+    },
+    octagonNode: {
+        component: OctagonNode,
         defaultData: defaultData,
         controller: DefaultNodeController,
         possibleHandles: defaultPossibleHandles,
@@ -171,7 +206,7 @@ let num = 0;
 export const nodeListCategories = [
     {
         id: 'c1',
-        title: 'Стандартні',
+        title: 'Загальні',
         nodes: [
             {
                 id: `c1_${num++}`,
@@ -188,8 +223,44 @@ export const nodeListCategories = [
             {
                 id: `c1_${num++}`,
                 name: 'ovalNode',
-                title: 'Овал, коло',
+                title: 'Коло, овал',
                 icon: OvalNodeIcon,
+            },
+            {
+                id: `c1_${num++}`,
+                name: 'textNode',
+                title: 'Текст',
+                icon: TextNodeIcon,
+            },
+            {
+                id: `c1_${num++}`,
+                name: 'diamondNode',
+                title: 'Ромб',
+                icon: DiamondNodeIcon,
+            },
+            {
+                id: `c1_${num++}`,
+                name: 'parallelogramNode',
+                title: 'Паралелограм',
+                icon: ParallelogramNodeIcon,
+            },
+            {
+                id: `c1_${num++}`,
+                name: 'pentagonNode',
+                title: "П'ятикутник",
+                icon: PentagonNodeIcon,
+            },
+            {
+                id: `c1_${num++}`,
+                name: 'hexagonNode',
+                title: 'Шестикутник',
+                icon: HexagonNodeIcon,
+            },
+            {
+                id: `c1_${num++}`,
+                name: 'octagonNode',
+                title: 'Восьмикутник',
+                icon: OctagonNodeIcon,
             },
         ],
     },

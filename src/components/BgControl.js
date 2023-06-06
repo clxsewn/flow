@@ -35,7 +35,13 @@ const visibleSettings = {
 const BgControl = () => {
     const dispatch = useDispatch();
 
-    const opts = useSelector((state) => state.bg);
+    const { nodes, edges, bg } = useSelector((state) => {
+        return { nodes: state.nodes, edges: state.edges, bg: state.bg };
+    });
+
+    const saveInLocalStorage = () => {
+        localStorage.setItem('flow', JSON.stringify({ nodes, edges, bg }));
+    };
 
     console.log('<BgControl /> render');
 
@@ -63,7 +69,7 @@ const BgControl = () => {
                                             selectBgVariant(e.target.value)
                                         )
                                     }
-                                    value={opts.variant}
+                                    value={bg.variant}
                                 >
                                     {bgVariants.map((v) => (
                                         <option
@@ -76,7 +82,7 @@ const BgControl = () => {
                                 </select>
                             </div>
                         </div>
-                        {visibleSettings[opts.variant].map((s) => (
+                        {visibleSettings[bg.variant].map((s) => (
                             <div key={s.prop}>
                                 <div>{s.title}</div>
                                 <div className='input-group mb-3'>
@@ -90,7 +96,7 @@ const BgControl = () => {
                                         -{s.step}
                                     </button>
                                     <span className='input-group-text'>
-                                        {opts[s.prop]}
+                                        {bg[s.prop]}
                                     </span>
                                     <button
                                         className='btn btn-outline-secondary'
@@ -111,7 +117,7 @@ const BgControl = () => {
                             <input
                                 id='bg-color'
                                 type='color'
-                                value={opts.color}
+                                value={bg.color}
                                 onChange={(e) =>
                                     dispatch(setColor(e.target.value))
                                 }
@@ -124,14 +130,23 @@ const BgControl = () => {
                         <DownloadButton className='mb-3' />
                         <button className='btn btn-outline-success mb-3'>
                             <div className='justify-content'>
-                                <i class='bi bi-file-earmark-arrow-down-fill'></i>
+                                <i className='bi bi-file-earmark-arrow-down-fill'></i>
                                 <span>Зберегти JSON</span>
                             </div>
                         </button>
                         <button className='btn btn-outline-success mb-3'>
                             <div className='justify-content'>
-                                <i class='bi bi-file-earmark-arrow-up-fill'></i>{' '}
+                                <i className='bi bi-file-earmark-arrow-up-fill'></i>
                                 <span>Завантажити JSON</span>
+                            </div>
+                        </button>
+                        <button
+                            className='btn btn-outline-success mb-3'
+                            onClick={saveInLocalStorage}
+                        >
+                            <div className='justify-content'>
+                                <i className='bi bi-globe2'></i>
+                                <span>Зберегти у локальному сховищі</span>
                             </div>
                         </button>
                     </div>

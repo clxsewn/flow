@@ -1,5 +1,16 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { ReactFlowProvider } from 'reactflow';
+import { useDispatch, useSelector } from 'react-redux';
+import { setNodes } from './slices/nodesSlice';
+import { setEdges } from './slices/edgesSlice';
+import { setBg } from './slices/bgSlice';
+import { nodesExplore } from './nodeUtils';
+
+import ControlPanel from './components/ControlPanel';
+import BgControl from './components/BgControl';
+import EdgeControl from './components/EdgeControl';
+import NodesList from './components/NodesList';
+import ReactFlowWrapper from './components/ReactFlowWrapper';
 
 import 'reactflow/dist/style.css';
 import 'react-tabs/style/react-tabs.css';
@@ -7,23 +18,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-import ControlPanel from './components/ControlPanel';
-import BgControl, { initialBgOpts } from './components/BgControl';
-import EdgeControl from './components/EdgeControl';
-import NodesList from './components/NodesList';
-import { useDispatch, useSelector } from 'react-redux';
-import { addNode, setNodes } from './slices/nodesSlice';
-import { setEdges } from './slices/edgesSlice';
-import ReactFlowWrapper from './components/ReactFlowWrapper';
-
-import { nodeControls, nodesExplore } from './nodeUtils';
-
-let id = 0;
-const getId = () => `dndnode_${id++}`;
-
 function App() {
-    const nodes = useSelector((state) => state.nodes);
-    const edges = useSelector((state) => state.edges);
+    const { nodes, edges } = useSelector((state) => {
+        return { nodes: state.nodes, edges: state.edges };
+    });
 
     const dispatch = useDispatch();
 
@@ -59,15 +57,15 @@ function App() {
     };
 
     useEffect(() => {
-        if (localStorage.getItem('data') !== null) {
-            const data = JSON.parse(localStorage.getItem('data'));
+        if (localStorage.getItem('flow') !== null) {
+            const data = JSON.parse(localStorage.getItem('flow'));
             dispatch(setNodes(data.nodes));
             dispatch(setEdges(data.edges));
-            // setBgOpts(data.bg);
+            dispatch(setBg(data.bg));
         }
     }, []);
 
-    console.log('<App /> render');
+    console.log('app render');
 
     return (
         <main className='dndflow'>

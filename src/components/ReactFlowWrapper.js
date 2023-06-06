@@ -11,17 +11,18 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setEdges } from '../slices/edgesSlice';
 import { setNodes, addNode } from '../slices/nodesSlice';
 import BgWrapper from './BgWrapper';
-import { nodeTypes, defaultNodesData, nodesExplore } from '../nodeUtils';
+import { nodeTypes, nodesExplore } from '../nodeUtils';
+import { v4 as uid } from 'uuid';
 
-let id = 0;
-const getId = () => `dndnode_${id++}`;
+const getId = () => `node_${uid().slice(0, 8)}`;
 
 const ReactFlowWrapper = () => {
     const reactFlowWrapper = useRef(null);
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
-    const nodes = useSelector((state) => state.nodes);
-    const edges = useSelector((state) => state.edges);
+    const { nodes, edges, bg } = useSelector((state) => {
+        return { nodes: state.nodes, edges: state.edges, bg: state.bg };
+    });
 
     const dispatch = useDispatch();
 
@@ -91,14 +92,13 @@ const ReactFlowWrapper = () => {
                 reactFlowWrapper.current.getBoundingClientRect();
             const type = event.dataTransfer.getData('application/reactflow');
 
-            // check if the dropped element is valid
             if (typeof type === 'undefined' || !type) {
                 return;
             }
 
             const position = reactFlowInstance.project({
-                x: event.clientX - reactFlowBounds.left,
-                y: event.clientY - reactFlowBounds.top,
+                x: event.clientX - reactFlowBounds.left - 60,
+                y: event.clientY - reactFlowBounds.top - 60,
             });
             const newNode = {
                 id: getId(),
@@ -107,18 +107,10 @@ const ReactFlowWrapper = () => {
                 data: nodesExplore[type].defaultData,
             };
 
-            console.log(newNode);
-
             dispatch(addNode(newNode));
         },
         [reactFlowInstance]
     );
-
-    const selectedd = useSelector((state) =>
-        state.nodes.find((i) => i.selected === true)
-    );
-
-    console.log(selectedd);
 
     return (
         <div className='reactflow-wrapper' ref={reactFlowWrapper}>
@@ -135,34 +127,9 @@ const ReactFlowWrapper = () => {
                 snapToGrid={true}
                 snapGrid={[10, 10]}
             >
-                {/* <Panel position='top-left'>
-                <ul onClick={() => console.log(setNodes([]))}>
-                    {nodes.map((i) => (
-                        <li key={i.id}>
-                            {i.data.label}
-                            {i.selected ? ' - selected' : ''}
-                        </li>
-                    ))}
-                </ul>
-                <ul>
-                    {edges.map((i) => (
-                        <li key={i.id}>
-                            {i.id}
-                            {i.selected ? ' - selected' : ''}
-                        </li>
-                    ))}
-                </ul>
-            </Panel> */}
                 <Controls />
                 <MiniMap />
-                {/* <Background
-        variant={bgOpts.value}
-        size={bgOpts.size}
-        gap={bgOpts.gap}
-        lineWidth={bgOpts.lineWidth}
-        color={bgOpts.color}
-    /> */}
-                <BgWrapper />
+                <BgWrapper bg={bg} />
             </ReactFlow>
         </div>
     );

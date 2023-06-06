@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Handle, Position } from 'reactflow';
 import { setLabel } from '../../slices/nodesSlice';
 import { NodeResizer } from 'reactflow';
+import ResizerWrapper from '../ResizerWrapper';
 
 export const RoundedRectangleNodeControl = ({ id }) => {
     const dispatch = useDispatch();
@@ -21,14 +22,14 @@ export const RoundedRectangleNodeControl = ({ id }) => {
 const RoundedRectangleNode = ({ data, selected }) => {
     return (
         <div className='node rounded-rectangle-node'>
-            <NodeResizer
+            <ResizerWrapper
                 color='#ff0071'
                 isVisible={selected}
-                minWidth={100}
-                minHeight={30}
+                width={data.width}
+                height={data.height}
             />
             <div className='node-label'>
-                <div>{data.label}</div>
+                <div>{data.label.text}</div>
             </div>
             <Handle type='target' position={Position.Right} />
         </div>
@@ -38,7 +39,7 @@ const RoundedRectangleNode = ({ data, selected }) => {
 export default RoundedRectangleNode;
 
 export const RoundedRectangleNodeIcon = (
-    <svg style={{ width: '100%', height: '50%' }}>
+    <svg style={{ width: '80%', height: '50%' }}>
         <rect
             x='1.3'
             y='1.3'

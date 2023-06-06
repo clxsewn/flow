@@ -27,9 +27,12 @@ export const initialState = {
 };
 
 const bgSlice = createSlice({
-    name: 'edges',
+    name: 'bg',
     initialState,
     reducers: {
+        setBg: (state, action) => {
+            return action.payload;
+        },
         setColor: (state, action) => {
             state.color = action.payload;
         },
@@ -64,5 +67,6 @@ export const {
     changeGap,
     changeSize,
     changeLineWidth,
+    setBg,
 } = bgSlice.actions;
 export default bgSlice.reducer;

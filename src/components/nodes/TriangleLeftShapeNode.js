@@ -60,8 +60,8 @@ const TriangleLeftShapeNode = ({ selected, data }) => {
             <NodeResizer color='#ff0071' isVisible={selected} />
             <svg width='100%' height='100%'>
                 <polygon
-                    points={`${data.width},0 0,${data.height / 2} ${
-                        data.width
+                    points={`${data.width - 1},0 0,${data.height / 2} ${
+                        data.width - 1
                     },${data.height}`}
                     style={{ fill: 'white', stroke: 'black', strokeWidth: 1 }}
                 />
