@@ -1,22 +1,12 @@
 import { memo } from 'react';
-import { Handle } from 'reactflow';
-import { NodeResizer } from 'reactflow';
+import DefaultNodeInner from '../DefaultNodeInner';
 
 const OctagonNode = ({ data, selected }) => {
     const { width, height } = data;
     return (
         <div className='node'>
-            <NodeResizer color='#ff0071' isVisible={selected} />
-            <div
-                className='node-text'
-                style={{
-                    color: data.label.color,
-                    fontSize: data.label.fontSize,
-                }}
-            >
-                {data.label.text}
-            </div>
-            <svg height='100%' width='100%'>
+            <DefaultNodeInner data={data} selected={selected} />
+            <svg width={data.width} height={data.height}>
                 <polygon
                     points={`${width * 0.25},1 ${width * 0.75},1 ${width - 1},${
                         height * 0.25
@@ -32,22 +22,6 @@ const OctagonNode = ({ data, selected }) => {
                     }}
                 />
             </svg>
-            {data.handles.map((h) => (
-                <Handle
-                    key={h.id}
-                    type={h.type}
-                    position={h.position}
-                    id={h.id}
-                    style={h.style}
-                />
-            ))}
-            {selected ? (
-                <div className='sizes-tip'>
-                    {width}x{height}
-                </div>
-            ) : (
-                ''
-            )}
         </div>
     );
 };

@@ -1,21 +1,25 @@
 import { memo } from 'react';
-import { Handle } from 'reactflow';
-import { NodeResizer } from 'reactflow';
+import DefaultNodeInner from '../DefaultNodeInner';
 
 const OvalNode = ({ data, selected }) => {
+    const { width, height } = data;
+
     return (
-        <div className='node oval-node'>
-            <NodeResizer color='#ff0071' isVisible={selected} />
-            <div className='node-label'>{data.label.text}</div>
-            {data.handles.map((h) => (
-                <Handle
-                    key={h.id}
-                    id={h.id}
-                    position={h.position}
-                    style={h.style}
-                    type={h.type}
+        <div className='node'>
+            <DefaultNodeInner data={data} selected={selected} />
+            <svg width={data.width} height={data.height}>
+                <ellipse
+                    cx={width / 2}
+                    cy={height / 2}
+                    rx={width / 2 - 1}
+                    ry={height / 2 - 1}
+                    style={{
+                        fill: data.fillColor,
+                        stroke: 'black',
+                        strokeWidth: 1,
+                    }}
                 />
-            ))}
+            </svg>
         </div>
     );
 };

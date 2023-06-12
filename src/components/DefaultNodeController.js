@@ -1,25 +1,31 @@
 import { useUpdateNodeInternals } from 'reactflow';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
     setLabel,
     addHandle,
     deleteHandle,
     setTextColor,
     setFillColor,
-    toggleHandle,
+    toggleHandleType,
     changeFontSize,
+    toggleHandleVisibility,
 } from '../slices/nodesSlice';
 import { TabList, Tabs, Tab, TabPanel } from 'react-tabs';
 import { nodesExplore } from '../nodeUtils';
+import { memo } from 'react';
 
 const handleTranslate = {
-    source: 'Джерело',
-    target: 'Ціль',
+    source: {
+        text: 'Джерело',
+        icon: <i className='bi bi-box-arrow-up'></i>,
+    },
+    target: {
+        text: 'Ціль',
+        icon: <i className='bi bi-box-arrow-in-down'></i>,
+    },
 };
 
-const DefaultNodeController = ({ id }) => {
-    const node = useSelector((state) => state.nodes[id]);
-
+const DefaultNodeController = ({ id, node }) => {
     const dispatch = useDispatch();
     const updateNodeInternals = useUpdateNodeInternals();
 
@@ -61,7 +67,12 @@ const DefaultNodeController = ({ id }) => {
     };
 
     const toggleHndl = (hId) => {
-        dispatch(toggleHandle({ id: id, hId: hId }));
+        dispatch(toggleHandleType({ id: id, hId: hId }));
+        updateNodeInternals(node.id);
+    };
+
+    const toggleHndlVisibility = (hId) => {
+        dispatch(toggleHandleVisibility({ id: id, hId: hId }));
         updateNodeInternals(node.id);
     };
 
@@ -70,7 +81,7 @@ const DefaultNodeController = ({ id }) => {
             <Tabs>
                 <TabList>
                     <Tab>Вигляд</Tab>
-                    <Tab>Підключення</Tab>
+                    <Tab>Точки з'єднань</Tab>
                 </TabList>
                 <TabPanel className='container'>
                     <label htmlFor='label' className='form-label'>
@@ -82,6 +93,7 @@ const DefaultNodeController = ({ id }) => {
                         className='form-control mb-3'
                         value={node.data.label.text}
                         onChange={setLabelHandle}
+                        autoFocus={true}
                     />
                     <div>Розмір тексту</div>
                     <div className='input-group mb-3'>
@@ -103,10 +115,8 @@ const DefaultNodeController = ({ id }) => {
                             +1
                         </button>
                     </div>
-                    <div className='justify-content mb-1'>
-                        <label htmlFor='text-color' className='form-label'>
-                            Колір тексту
-                        </label>
+                    <div className='justify-content mb-3'>
+                        <label htmlFor='text-color'>Колір тексту</label>
                         <input
                             id='text-color'
                             type='color'
@@ -115,11 +125,9 @@ const DefaultNodeController = ({ id }) => {
                         />
                     </div>
                     <div className='justify-content'>
-                        <label htmlFor='fill-color' className='form-label'>
-                            Колір фону
-                        </label>
+                        <label htmlFor='fill-color'>Колір фону</label>
                         <input
-                            id='bg-color'
+                            id='fill-color'
                             type='color'
                             value={node.data.fillColor}
                             onChange={setFillColorHandle}
@@ -127,40 +135,69 @@ const DefaultNodeController = ({ id }) => {
                     </div>
                 </TabPanel>
                 <TabPanel>
-                    {unusedHandles.map((h, hId) => {
-                        return (
-                            <div key={h.id}>
-                                <button onClick={() => addHandle_(hId)}>
-                                    Add {h.name} handle
-                                </button>
-                            </div>
-                        );
-                    })}
-                    {node.data.handles.map((h, hId) => {
-                        return (
-                            <fieldset key={h.id} className='handle-border'>
-                                <legend className='handle-border'>
-                                    Хендл: {handleTranslate[h.type]}
-                                </legend>
-                                <button
-                                    className='btn btn-outline-danger btn-sm'
-                                    onClick={() => toggleHndl(hId)}
-                                >
-                                    Змінити {h.name}
-                                </button>
-                                <button
-                                    className='btn btn-outline-danger btn-sm'
-                                    onClick={() => deleteHandle_(hId)}
-                                >
-                                    Видалити {h.name}
-                                </button>
-                            </fieldset>
-                        );
-                    })}
+                    <div className='container'>
+                        <div className='d-grid gap-2 mb-3'>
+                            {unusedHandles.map((h, hId) => {
+                                return (
+                                    <button
+                                        key={h.id}
+                                        className='btn btn-outline-success mb-1'
+                                        onClick={() => addHandle_(hId)}
+                                        type='button'
+                                    >
+                                        + {h.name}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        {node.data.handles.map((h, hId) => {
+                            return (
+                                <fieldset key={h.id} className='handle-border'>
+                                    <legend className='handle-border'>
+                                        {h.name}: {handleTranslate[h.type].text}{' '}
+                                        {handleTranslate[h.type].icon}
+                                    </legend>
+                                    <div className='d-grid gap-2'>
+                                        <button
+                                            className='btn btn-outline-secondary btn-sm'
+                                            onClick={() => toggleHndl(hId)}
+                                        >
+                                            <div className='justify-content'>
+                                                <i className='bi bi-arrow-left-right'></i>
+                                                <span>Переключити</span>
+                                            </div>
+                                        </button>
+                                        <button
+                                            className='btn btn-outline-secondary btn-sm'
+                                            onClick={() =>
+                                                toggleHndlVisibility(hId)
+                                            }
+                                        >
+                                            <div className='justify-content'>
+                                                <i className='bi bi-eye-fill'></i>
+                                                <span>
+                                                    Приховати / Відобразити
+                                                </span>
+                                            </div>
+                                        </button>
+                                        <button
+                                            className='btn btn-outline-danger btn-sm'
+                                            onClick={() => deleteHandle_(hId)}
+                                        >
+                                            <div className='justify-content'>
+                                                <i className='bi bi-x-circle'></i>
+                                                <span>Видалити</span>
+                                            </div>
+                                        </button>
+                                    </div>
+                                </fieldset>
+                            );
+                        })}
+                    </div>
                 </TabPanel>
             </Tabs>
         </div>
     );
 };
 
-export default DefaultNodeController;
+export default memo(DefaultNodeController);

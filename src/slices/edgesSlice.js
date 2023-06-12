@@ -1,15 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = [
-    // {
-    //     id: 'e1-2',
-    //     source: '1',
-    //     target: '2',
-    //     label: 'label 1',
-    //     type: 'default',
-    //     animated: false,
-    // },
-];
+const initialState = [];
 
 const edgesSlice = createSlice({
     name: 'edges',
@@ -30,9 +21,24 @@ const edgesSlice = createSlice({
         setLabel: (state, action) => {
             state[action.payload.id].label = action.payload.label;
         },
+
+        setEndMarkerType: (state, action) => {
+            state[action.payload.id].markerEnd.type = action.payload.type;
+        },
+
+        setColor: (state, action) => {
+            state[action.payload.id].markerEnd.color = action.payload.color;
+            state[action.payload.id].style.stroke = action.payload.color;
+        },
     },
 });
 
-export const { setEdges, setType, toggleAnimation, setLabel } =
-    edgesSlice.actions;
+export const {
+    setEdges,
+    setType,
+    toggleAnimation,
+    setLabel,
+    setEndMarkerType,
+    setColor,
+} = edgesSlice.actions;
 export default edgesSlice.reducer;

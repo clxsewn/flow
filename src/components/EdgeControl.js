@@ -1,5 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { setLabel, setType, toggleAnimation } from '../slices/edgesSlice';
+import {
+    setEndMarkerType,
+    setLabel,
+    setType,
+    toggleAnimation,
+    setColor,
+} from '../slices/edgesSlice';
+import { MarkerType } from 'reactflow';
+import { memo } from 'react';
 
 const edgeTypes = [
     {
@@ -11,7 +19,7 @@ const edgeTypes = [
         type: 'step',
     },
     {
-        text: 'Smoothstep',
+        text: 'Крок (заокруглений)',
         type: 'smoothstep',
     },
     {
@@ -20,51 +28,131 @@ const edgeTypes = [
     },
 ];
 
-const EdgeControl = () => {
+const markerTypes = [
+    {
+        text: 'Відсутній',
+        type: '',
+    },
+    {
+        text: 'Стрілка',
+        type: MarkerType.Arrow,
+    },
+    {
+        text: 'Стрілка (суцільна)',
+        type: MarkerType.ArrowClosed,
+    },
+];
+
+const EdgeControl = ({ id, edge }) => {
     const dispatch = useDispatch();
-    const edges = useSelector((state) => state.edges);
-    const selectedIndex = edges.findIndex((e) => e.selected);
 
     const setTypeHandle = (event) => {
-        dispatch(setType({ id: selectedIndex, type: event.target.value }));
+        dispatch(setType({ id: id, type: event.target.value }));
     };
 
     const setAnimated = () => {
-        dispatch(toggleAnimation(selectedIndex));
+        dispatch(toggleAnimation(id));
     };
 
     const setLabelHandle = (event) => {
         dispatch(
             setLabel({
-                id: selectedIndex,
+                id: id,
                 label: event.target.value,
             })
         );
     };
 
+    const setEndMarkerTypeHandle = (type) => {
+        dispatch(setEndMarkerType({ id: id, type: type }));
+    };
+
+    const setColorHandle = (color) => {
+        dispatch(setColor({ id: id, color: color }));
+    };
+
     return (
-        <div>
+        <div className='container mt-3'>
             <div>
+                <label htmlFor='edge-text' className='form-label'>
+                    Текст
+                </label>
                 <input
+                    id='edge-text'
                     type='text'
-                    value={edges[selectedIndex].label}
+                    className='form-control mb-3'
+                    value={edge.label}
                     onChange={setLabelHandle}
                 />
             </div>
-            <select value={edges[selectedIndex].type} onChange={setTypeHandle}>
-                {edgeTypes.map((t) => (
-                    <option key={t.type} value={t.type}>
-                        {t.text}
-                    </option>
-                ))}
-            </select>
-            <input
-                type='checkbox'
-                checked={edges[selectedIndex].animated}
-                onChange={setAnimated}
-            />
+            <div className='input-group flex-nowrap mb-3'>
+                <label htmlFor='edge-type' className='input-group-text'>
+                    Тип
+                </label>
+                <select
+                    id='edge-type'
+                    value={edge.type}
+                    className='form-select'
+                    onChange={setTypeHandle}
+                >
+                    {edgeTypes.map((t) => (
+                        <option key={t.type} value={t.type}>
+                            {t.text}
+                        </option>
+                    ))}
+                </select>
+            </div>
+            <div className='form-check'>
+                <input
+                    id='edge-anim'
+                    className='form-check-input'
+                    type='checkbox'
+                    checked={edge.animated}
+                    onChange={setAnimated}
+                />
+                <label className='form-check-label' htmlFor='edge-anim'>
+                    Анімація
+                </label>
+            </div>
+            <div className='input-group flex-nowrap mb-3'>
+                <span className='input-group-text' id='addon-wrapping'>
+                    Маркер:
+                </span>
+                <select
+                    className='form-select'
+                    onChange={(e) => setEndMarkerTypeHandle(e.target.value)}
+                    value={edge.markerEnd.type}
+                >
+                    {markerTypes.map((v) => (
+                        <option key={v.type} value={v.type}>
+                            {v.text}
+                        </option>
+                    ))}
+                </select>
+            </div>
+            <div className='justify-content mb-3'>
+                <label htmlFor='edge-color'>Колір з'єднання:</label>
+                <input
+                    id='edge-color'
+                    type='color'
+                    value={edge.style.stroke}
+                    onChange={(e) => setColorHandle(e.target.value)}
+                />
+            </div>
+            <div>Ширина лінії</div>
+            <div className='input-group mb-3'>
+                <button className='btn btn-outline-secondary' type='button'>
+                    -1
+                </button>
+                <span className='input-group-text'>
+                    {edge.style.strokeWidth}
+                </span>
+                <button className='btn btn-outline-secondary' type='button'>
+                    +1
+                </button>
+            </div>
         </div>
     );
 };
 
-export default EdgeControl;
+export default memo(EdgeControl);

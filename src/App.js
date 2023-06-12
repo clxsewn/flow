@@ -19,8 +19,8 @@ import 'bootstrap/dist/js/bootstrap.bundle.min';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 function App() {
-    const { nodes, edges } = useSelector((state) => {
-        return { nodes: state.nodes, edges: state.edges };
+    const { nodes, edges, bg } = useSelector((state) => {
+        return { nodes: state.nodes, edges: state.edges, bg: state.bg };
     });
 
     const dispatch = useDispatch();
@@ -65,30 +65,25 @@ function App() {
         }
     }, []);
 
-    console.log('app render');
-
     return (
         <main className='dndflow'>
             <ReactFlowProvider>
                 <NodesList />
-                <div style={{ width: 'calc(100vw - 480px)', height: '100vh' }}>
-                    <ReactFlowWrapper />
-                </div>
+                <ReactFlowWrapper />
                 <ControlPanel>
                     {nodeSelected !== -1 ? (
                         <NodeController
                             id={nodeSelected}
-                            data={nodes[nodeSelected].data}
-                            setNodes={setNodes}
+                            node={nodes[nodeSelected]}
                         />
                     ) : edgeSelected !== -1 ? (
-                        <EdgeControl />
+                        <EdgeControl
+                            id={edgeSelected}
+                            edge={edges[edgeSelected]}
+                        />
                     ) : (
-                        <BgControl />
+                        <BgControl nodes={nodes} edges={edges} bg={bg} />
                     )}
-                    <button onClick={downloadJSON}>Download JSON</button>
-                    <button onClick={saveLocally}>Save Locally</button>
-                    <button onClick={clearLocally}>Clear local storage</button>
                 </ControlPanel>
             </ReactFlowProvider>
         </main>

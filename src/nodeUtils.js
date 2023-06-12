@@ -54,7 +54,7 @@ import HexagonNode, { HexagonNodeIcon } from './components/nodes/HexagonNode';
 import OctagonNode, { OctagonNodeIcon } from './components/nodes/OctagonNode';
 
 const defaultData = {
-    label: { text: 'Node', color: '#000000', fontSize: 18 },
+    label: { text: 'Фігура', color: '#000000', fontSize: 18 },
     fillColor: '#ffffff',
     handles: [],
     width: 100,
@@ -64,27 +64,36 @@ const defaultData = {
 const defaultPossibleHandles = [
     {
         id: 'top_1',
-        name: 'Top',
+        name: 'Зверху',
         position: 'top',
-        style: { left: '50%', top: '0', transform: 'translate(-50%, -50%)' },
+        style: { left: '50%', top: '1px', transform: 'translate(-50%, -50%)' },
     },
     {
         id: 'bottom_1',
-        name: 'Bottom',
+        name: 'Знизу',
         position: 'bottom',
-        style: { left: '50%', top: '100%', transform: 'translate(-50%, -50%)' },
+        style: {
+            left: '50%',
+            top: 'calc(100% - 1px)',
+            transform: 'translate(-50%, -50%)',
+        },
     },
     {
         id: 'left_1',
-        name: 'Left',
+        name: 'Зліва',
         position: 'left',
-        style: { left: '0', top: '50%', transform: 'translate(-50%, -50%)' },
+        style: { left: '1px', top: '50%', transform: 'translate(-50%, -50%)' },
     },
     {
         id: 'right_1',
-        name: 'Right',
+        name: 'Справа',
         position: 'right',
-        style: { left: '100%', top: '50%', transform: 'translate(-50%, -50%)' },
+        style: {
+            left: 'calc(100% - 1px)',
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
+            opacity: '1',
+        },
     },
 ];
 

@@ -6,6 +6,7 @@ import {
     applyEdgeChanges,
     MiniMap,
     Controls,
+    MarkerType,
 } from 'reactflow';
 import { useSelector, useDispatch } from 'react-redux';
 import { setEdges } from '../slices/edgesSlice';
@@ -34,7 +35,16 @@ const ReactFlowWrapper = () => {
                 animated: false,
                 type: 'default',
                 label: '',
-                color: '#ff1100',
+                markerEnd: {
+                    type: MarkerType.ArrowClosed,
+                    width: 20,
+                    height: 20,
+                    color: '#b1b1b7',
+                },
+                style: {
+                    strokeWidth: 1,
+                    stroke: '#b1b1b7',
+                },
             };
         }
         dispatch(setEdges(newEdges));
@@ -97,13 +107,15 @@ const ReactFlowWrapper = () => {
             }
 
             const position = reactFlowInstance.project({
-                x: event.clientX - reactFlowBounds.left - 60,
-                y: event.clientY - reactFlowBounds.top - 60,
+                x: event.clientX - reactFlowBounds.left - 50,
+                y: event.clientY - reactFlowBounds.top - 50,
             });
             const newNode = {
                 id: getId(),
                 type,
                 position,
+                width: 100,
+                height: 100,
                 data: nodesExplore[type].defaultData,
             };
 

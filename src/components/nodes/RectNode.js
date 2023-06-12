@@ -1,25 +1,21 @@
 import { memo } from 'react';
-import { Handle } from 'reactflow';
-import ResizerWrapper from '../ResizerWrapper';
+import DefaultNodeInner from '../DefaultNodeInner';
 
 const RectNode = ({ data, selected }) => {
     return (
-        <div className='node rect-node'>
-            <ResizerWrapper
-                color='#ff0071'
-                isVisible={selected}
-                width={data.width}
-                height={data.height}
-            />
-            <div className='node-label'>{data.label.text}</div>
-            {data.handles.map((h) => (
-                <Handle
-                    key={h.id}
-                    type={h.type}
-                    position={h.position}
-                    id={h.id}
+        <div className='node'>
+            <DefaultNodeInner data={data} selected={selected} />
+            <svg width={data.width} height={data.height}>
+                <rect
+                    x='1'
+                    y='1'
+                    width={data.width - 2}
+                    height={data.height - 2}
+                    fill={data.fillColor}
+                    stroke='rgb(0, 0, 0)'
+                    strokeWidth='1'
                 />
-            ))}
+            </svg>
         </div>
     );
 };

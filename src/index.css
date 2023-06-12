@@ -23,7 +23,7 @@ main {
 
 #control-panel {
     height: 100vh;
-    width: 260px;
+    width: 280px;
     box-sizing: border-box;
     border-left: 1px solid #eee;
 }
@@ -68,9 +68,8 @@ main {
 }
 
 .dndflow {
-    flex-direction: column;
-    display: flex;
-    flex-grow: 1;
+    display: inline-grid;
+    grid-template-columns: 280px calc(100vw - 560px) 280px;
     height: 100%;
 }
 
@@ -106,7 +105,6 @@ main {
 }
 
 .dndflow .reactflow-wrapper {
-    flex-grow: 1;
     height: 100%;
 }
 
@@ -115,32 +113,16 @@ main {
 }
 
 .node {
-    height: 120px;
-    width: 120px;
-    min-height: 100%;
-    min-width: 100%;
     box-sizing: border-box;
 }
 
-.oval-node {
-    border: 1px solid black;
-    background-color: #fff;
-    border-radius: 100%;
-}
-
-.node-label {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .node-text {
+    width: 100%;
+    text-align: center;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    text-align: center;
 }
 
 .rect-node {

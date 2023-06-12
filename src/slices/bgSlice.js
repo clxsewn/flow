@@ -5,19 +5,19 @@ export const bgVariants = [
         text: 'Точки',
         variant: 'dots',
         size: 1,
-        gap: 25,
+        gap: 20,
     },
     {
         text: 'Лінії',
         variant: 'lines',
-        gap: 25,
+        gap: 20,
         lineWidth: 1,
     },
     {
         text: 'Хрестики',
         variant: 'cross',
         size: 6,
-        gap: 25,
+        gap: 20,
     },
 ];
 
@@ -42,7 +42,6 @@ const bgSlice = createSlice({
                 (i) => i.variant === action.payload
             );
             Object.keys(bgVariants[varsId]).forEach((i) => {
-                console.log(i);
                 state[i] = bgVariants[varsId][i];
             });
         },
@@ -69,4 +68,5 @@ export const {
     changeLineWidth,
     setBg,
 } = bgSlice.actions;
+
 export default bgSlice.reducer;

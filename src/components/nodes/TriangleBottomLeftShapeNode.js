@@ -1,21 +1,5 @@
 import { Handle, NodeResizer, Position } from 'reactflow';
-import { useDispatch, useSelector } from 'react-redux';
-import { setLabel } from '../../slices/nodesSlice';
 import { memo } from 'react';
-
-export const TriangleBottomLeftShapeNodeControl = ({ id }) => {
-    const dispatch = useDispatch();
-
-    const setLabelHandle = (e) => {
-        dispatch(setLabel({ id: id, label: e.target.value }));
-    };
-
-    const data = useSelector((state) => state.nodes[id]);
-
-    return (
-        <input type='text' value={data.data.label} onChange={setLabelHandle} />
-    );
-};
 
 const possibleHandles = [
     {

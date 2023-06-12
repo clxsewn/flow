@@ -7,7 +7,6 @@ const TextNode = ({ data, selected }) => {
         <div className='node'>
             <NodeResizer color='#ff0071' isVisible={selected} />
             <span
-                className='node-label'
                 style={{
                     fontSize: data.label.fontSize,
                     color: data.label.color,

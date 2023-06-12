@@ -4,7 +4,6 @@ import { toPng, toJpeg, toSvg } from 'html-to-image';
 
 function DownloadButton({ ...props }) {
     const { getNodes } = useReactFlow();
-    console.log('btn render');
 
     const onClick = (at) => {
         function downloadImage(dataUrl) {
@@ -30,14 +29,18 @@ function DownloadButton({ ...props }) {
 
         const func = accord[at];
 
+        console.log(transform[0], ' | ', transform[1]);
+
         func(document.querySelector('.react-flow__viewport'), {
             backgroundColor: '#ffffff',
-            width: nodesBounds.width,
-            height: nodesBounds.height,
+            width: nodesBounds.width + 30,
+            height: nodesBounds.height + 30,
             style: {
-                width: nodesBounds.width,
-                height: nodesBounds.height,
-                transform: `translate(${transform[0]}px, ${transform[1]}px) scale(${transform[2]})`,
+                width: nodesBounds.width + 30,
+                height: nodesBounds.height + 30,
+                transform: `translate(${transform[0] + 15}px, ${
+                    transform[1] + 15
+                }px) scale(${transform[2]})`,
             },
         }).then(downloadImage);
     };
@@ -51,7 +54,7 @@ function DownloadButton({ ...props }) {
                     onClick={() => onClick('png')}
                 >
                     <div className='justify-content'>
-                        <i class='bi bi-image'></i>
+                        <i className='bi bi-image'></i>
                         <span>Зберегти (рисунок)</span>
                     </div>
                 </button>

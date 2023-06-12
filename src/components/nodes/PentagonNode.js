@@ -1,28 +1,12 @@
 import { memo } from 'react';
-import { Handle } from 'reactflow';
-import { NodeResizer } from 'reactflow';
-import ResizerWrapper from '../ResizerWrapper';
+import DefaultNodeInner from '../DefaultNodeInner';
 
 const PentagonNode = ({ data, selected }) => {
     const { width, height } = data;
     return (
         <div className='node'>
-            <ResizerWrapper
-                color='#ff0071'
-                isVisible={selected}
-                width={data.width}
-                height={data.height}
-            />
-            <div
-                className='node-text'
-                style={{
-                    color: data.label.color,
-                    fontSize: data.label.fontSize,
-                }}
-            >
-                {data.label.text}
-            </div>
-            <svg height='100%' width='100%'>
+            <DefaultNodeInner data={data} selected={selected} />
+            <svg width={data.width} height={data.height}>
                 <polygon
                     points={`${width / 2},0 ${width},${height * 0.4} ${
                         width * 0.8
@@ -36,15 +20,6 @@ const PentagonNode = ({ data, selected }) => {
                     }}
                 />
             </svg>
-            {data.handles.map((h) => (
-                <Handle
-                    key={h.id}
-                    type={h.type}
-                    position={h.position}
-                    id={h.id}
-                    style={h.style}
-                />
-            ))}
         </div>
     );
 };

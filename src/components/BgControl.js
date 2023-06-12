@@ -1,6 +1,5 @@
-import { memo, useState } from 'react';
-import ColorSelect from './ColorSelect';
-import { useDispatch, useSelector } from 'react-redux';
+import { memo } from 'react';
+import { useDispatch } from 'react-redux';
 import {
     changeGap,
     changeLineWidth,
@@ -32,12 +31,8 @@ const visibleSettings = {
     ],
 };
 
-const BgControl = () => {
+const BgControl = ({ nodes, edges, bg }) => {
     const dispatch = useDispatch();
-
-    const { nodes, edges, bg } = useSelector((state) => {
-        return { nodes: state.nodes, edges: state.edges, bg: state.bg };
-    });
 
     const saveInLocalStorage = () => {
         localStorage.setItem('flow', JSON.stringify({ nodes, edges, bg }));
@@ -49,8 +44,12 @@ const BgControl = () => {
         <div>
             <Tabs>
                 <TabList>
-                    <Tab>Фон полотна</Tab>
-                    <Tab>I/O</Tab>
+                    <Tab>
+                        <span className='fs-tab'>Фон полотна</span>
+                    </Tab>
+                    <Tab>
+                        <span className='fs-tab'>Імпорт/Експорт</span>
+                    </Tab>
                 </TabList>
                 <TabPanel>
                     <div className='container'>
@@ -156,4 +155,4 @@ const BgControl = () => {
     );
 };
 
-export default BgControl;
+export default memo(BgControl);
