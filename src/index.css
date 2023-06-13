@@ -218,6 +218,7 @@ legend.handle-border {
 }
 
 .justify-content {
+    display: inline;
     display: flex;
     align-items: center;
     gap: 5px;

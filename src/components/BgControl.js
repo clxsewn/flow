@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import {
     changeGap,
@@ -7,9 +7,12 @@ import {
     selectBgVariant,
     bgVariants,
     setColor,
+    setBg,
 } from '../slices/bgSlice';
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
 import DownloadButton from './DownloadButton';
+import { setNodes } from '../slices/nodesSlice';
+import { setEdges } from '../slices/edgesSlice';
 
 const visibleSettings = {
     dots: [
@@ -33,12 +36,47 @@ const visibleSettings = {
 
 const BgControl = ({ nodes, edges, bg }) => {
     const dispatch = useDispatch();
+    const uploadBtn = useRef(null);
 
     const saveInLocalStorage = () => {
         localStorage.setItem('flow', JSON.stringify({ nodes, edges, bg }));
     };
 
-    console.log('<BgControl /> render');
+    const clearFlow = () => {
+        dispatch(setEdges([]));
+        dispatch(setNodes([]));
+    };
+
+    const downloadJSON = () => {
+        const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
+            JSON.stringify({ nodes, edges, bg })
+        )}`;
+        const link = document.createElement('a');
+        link.href = jsonString;
+        link.download = 'data.json';
+
+        link.click();
+    };
+
+    const uploadJSON = (e) => {
+        const file = e.target.files[0];
+
+        fetch('https://httpbin.org/post', {
+            method: 'POST',
+            body: file,
+            headers: {
+                'content-type': file.type,
+                'content-length': `${file.size}`,
+            },
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                dispatch(setNodes(data.json.nodes));
+                dispatch(setEdges(data.json.edges));
+                dispatch(setBg(data.json.bg));
+            })
+            .catch((err) => console.error(err));
+    };
 
     return (
         <div>
@@ -127,13 +165,25 @@ const BgControl = ({ nodes, edges, bg }) => {
                 <TabPanel>
                     <div className='container'>
                         <DownloadButton className='mb-3' />
-                        <button className='btn btn-outline-success mb-3'>
+                        <button
+                            className='btn btn-outline-success mb-3'
+                            onClick={downloadJSON}
+                        >
                             <div className='justify-content'>
                                 <i className='bi bi-file-earmark-arrow-down-fill'></i>
                                 <span>Зберегти JSON</span>
                             </div>
                         </button>
-                        <button className='btn btn-outline-success mb-3'>
+                        <input
+                            type='file'
+                            onChange={uploadJSON}
+                            ref={uploadBtn}
+                            style={{ display: 'none' }}
+                        />
+                        <button
+                            className='btn btn-outline-success mb-3'
+                            onClick={() => uploadBtn.current.click()}
+                        >
                             <div className='justify-content'>
                                 <i className='bi bi-file-earmark-arrow-up-fill'></i>
                                 <span>Завантажити JSON</span>
@@ -146,6 +196,15 @@ const BgControl = ({ nodes, edges, bg }) => {
                             <div className='justify-content'>
                                 <i className='bi bi-globe2'></i>
                                 <span>Зберегти у локальному сховищі</span>
+                            </div>
+                        </button>
+                        <button
+                            className='btn btn-outline-danger mb-3'
+                            onClick={clearFlow}
+                        >
+                            <div className='justify-content'>
+                                <i className='bi bi-x-circle'></i>
+                                <span>Очистити діаграму</span>
                             </div>
                         </button>
                     </div>

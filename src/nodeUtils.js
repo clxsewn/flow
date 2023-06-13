@@ -1,4 +1,6 @@
-import RectNode, { rectNodeIcon } from './components/nodes/RectNode';
+import RectangleNode, {
+    RectangleNodeIcon,
+} from './components/nodes/RectangleNode';
 import RoundedRectangleNode, {
     RoundedRectangleNodeIcon,
 } from './components/nodes/RoundedRectangleNode';
@@ -99,7 +101,7 @@ const defaultPossibleHandles = [
 
 export const nodesExplore = {
     rectNode: {
-        component: RectNode,
+        component: RectangleNode,
         defaultData: defaultData,
         controller: DefaultNodeController,
         possibleHandles: defaultPossibleHandles,
@@ -221,7 +223,7 @@ export const nodeListCategories = [
                 id: `c1_${num++}`,
                 name: 'rectNode',
                 title: 'Прямокутник',
-                icon: rectNodeIcon,
+                icon: RectangleNodeIcon,
             },
             {
                 id: `c1_${num++}`,

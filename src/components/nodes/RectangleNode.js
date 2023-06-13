@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import DefaultNodeInner from '../DefaultNodeInner';
 
-const RectNode = ({ data, selected }) => {
+const RectangleNode = ({ data, selected }) => {
     return (
         <div className='node'>
             <DefaultNodeInner data={data} selected={selected} />
@@ -20,9 +20,9 @@ const RectNode = ({ data, selected }) => {
     );
 };
 
-export default memo(RectNode);
+export default memo(RectangleNode);
 
-export const rectNodeIcon = (
+export const RectangleNodeIcon = (
     <svg style={{ width: '80%', height: '50%' }}>
         <rect
             x='1.3'

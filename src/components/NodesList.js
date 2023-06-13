@@ -7,8 +7,6 @@ const NodesList = () => {
         event.dataTransfer.effectAllowed = 'move';
     };
 
-    console.log('Node List render!');
-
     let categoryId = 0;
 
     return (

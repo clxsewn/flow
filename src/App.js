@@ -33,29 +33,6 @@ function App() {
         NodeController = nodesExplore[nodes[nodeSelected].type].controller;
     }
 
-    const downloadJSON = (e) => {
-        const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
-            //JSON.stringify(dataTransform(nodes, edges, bgOpts))
-            JSON.stringify({})
-        )}`;
-        const link = document.createElement('a');
-        link.href = jsonString;
-        link.download = 'data.json';
-
-        link.click();
-    };
-
-    const saveLocally = () => {
-        // localStorage.setItem(
-        //     'data',
-        //     JSON.stringify(dataTransform(nodes, edges, bgOpts))
-        // );
-    };
-
-    const clearLocally = () => {
-        localStorage.removeItem('data');
-    };
-
     useEffect(() => {
         if (localStorage.getItem('flow') !== null) {
             const data = JSON.parse(localStorage.getItem('flow'));
